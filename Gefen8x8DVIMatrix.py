@@ -34,7 +34,7 @@ class Gefen8x8DVIMatrix(Matrix):
         "Patch an input [1-n] to an output [1-n]"
         self.send('{}'.format(self.toLetter(output) + str(input)))
 
-    def getRoutingTable(self):
+    def getPatch(self):
         "Return the current routing table as a list of {output, input} tuples."
         # need to implement reading from serial - need to test with hardware to find format to parse
         self.send('M')

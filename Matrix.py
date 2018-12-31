@@ -45,7 +45,7 @@ class Matrix(ABC):
             self.patch(output, (output % self.INPUT_COUNT) + 1)
 
     @abstractmethod
-    def getRoutingTable(self):
+    def getPatch(self):
         "Return the current routing table as a list of {output, input} tuples."
 
     @abstractmethod
