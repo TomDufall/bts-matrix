@@ -40,9 +40,9 @@ class Matrix(ABC):
             self.patch(output, input)
 
     def patchOneToOne(self):
-        "Patch 1->1, 2->2, etc. If more outputs than inputs, follow default hardware behaviour, or keep using the final input."
-        for i in range(1, self.OUTPUT_COUNT + 1):
-            self.patch(i, min(i, INPUT_COUNT))
+        "Patch 1->1, 2->2, etc. If more outputs than inputs, wrap and start counting from 1 again."
+        for output in range(0, self.OUTPUT_COUNT):
+            self.patch(output, (output % self.INPUT_COUNT) + 1)
 
     @abstractmethod
     def getRoutingTable(self):
