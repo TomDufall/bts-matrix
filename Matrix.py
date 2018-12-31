@@ -49,22 +49,16 @@ class Matrix(ABC):
         "Return the current routing table as a list of {output, input} tuples."
 
     @abstractmethod
-    def blackout(self, output):
-        "Black out the given output."
-
-    @abstractmethod
-    def unblackout(self, output):
-        "Restore the given output from blackout."
-
-    def blackoutMulti(self, outputs):
+    def blackout(self, outputs):
         "Blackout the given outputs."
         for output in outputs:
-            self.blackout(output)
+            pass
 
-    def unblackoutMulti(self, outputs):
+    @abstractmethod
+    def unblackout(self, outputs):
         "Restore the given outputs from blackout."
         for output in outputs:
-            self.unblackout(output)
+            pass
 
     def blackoutAll(self):
         "Black out every output."

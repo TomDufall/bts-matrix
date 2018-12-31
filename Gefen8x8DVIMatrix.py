@@ -39,22 +39,14 @@ class Gefen8x8DVIMatrix(Matrix):
         # need to implement reading from serial - need to test with hardware to find format to parse
         self.send('M')
 
-    def blackout(self, output):
-        "Black out the given output."
-        self.sendLine('#MASK {}'.format(self.toLetter(output)))
-
-    def unblackout(self, output):
-        "Restore the given output from blackout."
-        self.sendLine('#UNMASK {}'.format(self.toLetter(output)))
-
-    def blackoutMulti(self, outputs):
+    def blackout(self, outputs):
         "Blackout the given outputs."
         str = '#MASK'
         for output in outputs:
             str += ' {}'.format(self.toLetter(output))
         self.sendLine(str)
 
-    def unblackoutMulti(self, outputs):
+    def unblackout(self, outputs):
         "Restore the given outputs from blackout."
         str = '#UNMASK'
         for output in outputs:
