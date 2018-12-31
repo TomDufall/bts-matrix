@@ -22,21 +22,27 @@ class Matrix(ABC):
     def patch(self, output, input):
         "Patch an input [1-n] to an output [1-n]"
 
-    @abstractmethod
     def patchMulti(self, patch):
         "A list of patch instructions, each given as a tuple {output, input}"
+        for output, input in patch:
+            self.patch(output, input)
 
-    @abstractmethod
     def patchList(self, patch):
         "An ordered list of inputs, to be applied to outputs in order. I.e. 1, 1, 2, 3 implies 1->1, 1->2, 2->2, 3->3"
+        output = 1
+        for input in patch:
+            self.patch(output, input)
+            output += 1
 
-    @abstractmethod
     def patchAll(self, input):
         "Patch the given input to every output"
+        for output in range(1, self.OUTPUT_COUNT + 1):
+            self.patch(output, input)
 
-    @abstractmethod
     def patchOneToOne(self):
         "Patch 1->1, 2->2, etc. If more outputs than inputs, follow default hardware behaviour, or keep using the final input."
+        for i in range(1, self.OUTPUT_COUNT + 1):
+            self.patch(i, min(i, INPUT_COUNT))
 
     @abstractmethod
     def getRoutingTable(self):
@@ -50,18 +56,22 @@ class Matrix(ABC):
     def unblackout(self, output):
         "Restore the given output from blackout."
 
-    @abstractmethod
-    def blackoutMulti(self, inputs):
+    def blackoutMulti(self, outputs):
         "Blackout the given outputs."
+        for output in outputs:
+            self.blackout(output)
 
-    @abstractmethod
-    def unblackoutMulti(self, inputs):
+    def unblackoutMulti(self, outputs):
         "Restore the given outputs from blackout."
+        for output in outputs:
+            self.unblackout(output)
 
-    @abstractmethod
     def blackoutAll(self):
         "Black out every output."
+        for output in range(1, self.OUTPUT_COUNT + 1):
+            self.blackout(output)
 
-    @abstractmethod
     def unblackoutAll(self):
         "Restore every output from blackout."
+        for output in range(1, self.OUTPUT_COUNT + 1):
+            self.unblackout(output)
