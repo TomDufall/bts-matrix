@@ -20,7 +20,10 @@ class Gefen8x8DVIMatrix(Matrix):
 
     def toLetter(self, number):
         "Convert a number to its corresponding letter in the alphabet (1-indexed). 1->A, 2->B, etc."
-        return chr(number + 96).upper()
+        try:
+            return chr(number + 96).upper()
+        except TypeError:
+            raise TypeError('Non-integers cannot be converted to letters')
 
     def send(self, msg):
         "Send a string over serial"
