@@ -51,12 +51,18 @@ class Matrix(ABC):
     @abstractmethod
     def blackout(self, outputs):
         "Blackout the given outputs."
+        if isinstance(outputs, list) != True:
+            # Convert to a single-element list
+            outputs = [outputs]
         for output in outputs:
             pass
 
     @abstractmethod
     def unblackout(self, outputs):
         "Restore the given outputs from blackout."
+        if isinstance(outputs, list) != True:
+            # Convert to a single-element list
+            outputs = [outputs]
         for output in outputs:
             pass
 

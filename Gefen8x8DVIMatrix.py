@@ -51,6 +51,9 @@ class Gefen8x8DVIMatrix(Matrix):
 
     def blackout(self, outputs):
         "Blackout the given outputs."
+        if isinstance(outputs, list) != True:
+            # Convert to a single-element list
+            outputs = [outputs]
         str = '#MASK'
         for output in outputs:
             str += ' {}'.format(self.toLetter(output))
@@ -58,6 +61,9 @@ class Gefen8x8DVIMatrix(Matrix):
 
     def unblackout(self, outputs):
         "Restore the given outputs from blackout."
+        if isinstance(outputs, list) != True:
+            # Convert to a single-element list
+            outputs = [outputs]
         str = '#UNMASK'
         for output in outputs:
             str += ' {}'.format(self.toLetter(output))
