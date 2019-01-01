@@ -7,45 +7,44 @@ class PrintMatrix(Matrix):
     def __init__(self, input_count, output_count):
         super().__init__(input_count, output_count)
 
-    def patch(self, output, input):
-        "Patch an input [1-n] to an output [1-n]"
-        print('Patch input {} to output {}'.format(input, output))
-
-    def patchMulti(self, patch):
-        "A list of patch instructions, each given as a tuple {output, input}"
-        print('Not yet implemented in text')
-
-    def patchList(self, patch):
-        "An ordered list of inputs, to be applied to outputs in order. I.e. 1, 1, 2, 3 implies 1->1, 1->2, 2->2, 3->3"
-        print('Not yet implemented in text')
+    def patch(self, patchPair):
+        "A list of patch instructions, each given as a tuple {output, input}. Patch the input to the output."
+        if isinstance(patchPair, list) != True:
+            # Convert to a single-element list
+            patchPair = [patchPair]
+        try:
+            for output, input in patchPair:
+                print('Patch input {} to output {}'.format(input, output))
+        except TypeError:
+            raise TypeError('Inappropriate argument type. Argument patchPair should be a tuple or list of tuples')
 
     def patchAll(self, input):
         "Patch the given input to every output"
         print('Patching all outputs to input {}'.format(input))
 
     def patchOneToOne(self):
-        "Patch 1->1, 2->2, etc. If more outputs than inputs, follow default hardware behaviour, or keep using the final input."
+        "Patch 1->1, 2->2, etc. If more outputs than inputs, wrap and start counting from 1 again."
         print('Patching all outputs one to one')
 
-    def getRoutingTable(self):
+    def getPatch(self):
         "Return the current routing table as a list of {output, input} tuples."
-        print('Not yet implemented in text')
+        print('Getting patch table from matrix')
 
-    def blackout(self, output):
-        "Black out the given output."
-        print('Blacking out output {}'.format(output))
-
-    def unblackout(self, output):
-        "Restore the given output from blackout."
-        print('Restoring from blackout output {}'.format(output))
-
-    def blackoutMulti(self, inputs):
+    def blackout(self, outputs):
         "Blackout the given outputs."
-        print('Not yet implemented in text')
+        if isinstance(outputs, list) != True:
+            # Convert to a single-element list
+            outputs = [outputs]
+        for output in outputs:
+            print('Blacking out output {}'.format(output))
 
-    def unblackoutMulti(self, inputs):
+    def unblackout(self, outputs):
         "Restore the given outputs from blackout."
-        print('Not yet implemented in text')
+        if isinstance(outputs, list) != True:
+            # Convert to a single-element list
+            outputs = [outputs]
+        for output in outputs:
+            print('Restoring from blackout output {}'.format(output))
 
     def blackoutAll(self):
         "Black out every output."
@@ -53,4 +52,4 @@ class PrintMatrix(Matrix):
 
     def unblackoutAll(self):
         "Restore every output from blackout."
-        print('Un-blacking out all outputs')
+        print('Restoring all outputs from blackout')
