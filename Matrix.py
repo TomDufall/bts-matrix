@@ -19,13 +19,10 @@ class Matrix(ABC):
         return self.OUT_COUNT
 
     @abstractmethod
-    def patch(self, output, input):
-        "Patch an input [1-n] to an output [1-n]"
-
-    def patchMulti(self, patch):
-        "A list of patch instructions, each given as a tuple {output, input}"
-        for output, input in patch:
-            self.patch(output, input)
+    def patch(self, patchPair):
+        "A list of patch instructions, each given as a tuple {output, input}. Patch the input to the output."
+        for output, input in patchPair:
+            pass
 
     def patchList(self, patch):
         "An ordered list of inputs, to be applied to outputs in order. I.e. 1, 1, 2, 3 implies 1->1, 1->2, 2->2, 3->3"

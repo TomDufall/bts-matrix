@@ -30,9 +30,10 @@ class Gefen8x8DVIMatrix(Matrix):
         "Send a string over serial with a carriage return"
         self.send(msg + '\r')
 
-    def patch(self, output, input):
-        "Patch an input [1-n] to an output [1-n]"
-        self.send('{}'.format(self.toLetter(output) + str(input)))
+    def patch(self, patchPair):
+        "A list of patch instructions, each given as a tuple {output, input}. Patch the input to the output."
+        for output, input in patchPair:
+            self.send('{}'.format(self.toLetter(output) + str(input)))
 
     def getPatch(self):
         "Return the current routing table as a list of {output, input} tuples."
