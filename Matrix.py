@@ -21,6 +21,9 @@ class Matrix(ABC):
     @abstractmethod
     def patch(self, patchPair):
         "A list of patch instructions, each given as a tuple {output, input}. Patch the input to the output."
+        if isinstance(patchPair, list) != True:
+            # Convert to a single-element list
+            patchPair = [patchPair]
         for output, input in patchPair:
             pass
 
