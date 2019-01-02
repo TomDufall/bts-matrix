@@ -19,8 +19,13 @@ class PresetController(ABC):
             pass
 
     @abstractmethod
-    def move(self, presetNo1, presetNo2):
-
+    def move(self, moveList):
+        "A tuple or list of tuples (preset1, preset2). Renumber preset1 as preset2, overwriting preset2 if present."
+        if isinstance(moveList, list) != True:
+            # Convert to a single-element list
+            moveList = [moveList]
+        for preset1, preset2 in moveList:
+            pass
 
     @abstractmethod
     def apply(self, presetNo):
