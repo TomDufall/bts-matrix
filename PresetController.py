@@ -10,12 +10,13 @@ class PresetController(ABC):
 
 
     @abstractmethod
-    def save(self, presetNo, patchList):
-
-
-    @abstractmethod
-    def saveMulti(self, saves):
-
+    def save(self, saves):
+        "A tuple or list of tuples (presetNo, [patchlist]). Save each preset."
+        if isinstance(saves, list) != True:
+            # Convert to a single-element list
+            saves = [saves]
+        for presetNo, patchlist in saves:
+            pass
 
     @abstractmethod
     def move(self, presetNo1, presetNo2):
