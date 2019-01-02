@@ -33,7 +33,17 @@ class PresetController(ABC):
 
     @abstractmethod
     def get(self, presetNos):
-
+        "Return the patchlist for the requested preset. If multiple presetNos, return a list of (patchNo, patchList) tuples."
+        if isinstance(moveList, list) != True:
+            # Single presetNo
+            pass
+            return # patchList
+        else:
+            response = []
+            for presetNo in presetNos:
+                response.append((presetNo, None))
+                pass
+            return response # [(presetNo, patchList)]
 
     @abstractmethod
     def getAll(self):
