@@ -64,4 +64,15 @@ class PresetController(ABC):
 
     @abstractmethod
     def exists(self, presetNos):
+        "If single presetNo, return True/False depending on whether it exists. For a list of presetNos, return a list of tuples(presetNo, True/False)."
+        if isinstance(presetNos, list) != True:
+            # Single presetNo
+            pass
+            return # True/False
+        else:
+            response = []
+            for presetNo in presetNos:
+                response.append((presetNo, None))
+                pass
+            return response # [(presetNo, patchList)]
         
