@@ -47,14 +47,20 @@ class PresetController(ABC):
 
     @abstractmethod
     def getAll(self):
-
+        pass
 
     @abstractmethod
     def delete(self, presetNos):
+        "Delete the requested preset(s)."
+        if isinstance(presetNos, list) != True:
+            # Convert to a single-element list
+            presetNos = [presetNos]
+        for presetNo in presetNos:
+            pass
 
     @abstractmethod
     def deleteAll(self):
-
+        pass
 
     @abstractmethod
     def exists(self, presetNos):
