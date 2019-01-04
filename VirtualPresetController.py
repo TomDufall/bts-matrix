@@ -20,12 +20,16 @@ class VirtualPresetController(PresetController):
                     self.presets.append((presetNo, patchlist))
 
     def move(self, moveList):
-        "A tuple or list of tuples (preset1, preset2). Renumber preset1 as preset2, overwriting preset2 if present."
+        "A tuple or list of tuples (preset1, preset2). Renumber preset1 as preset2, overwriting preset2 if present. Identified by number."
         if isinstance(moveList, list) != True:
             # Convert to a single-element list
             moveList = [moveList]
         for preset1, preset2 in moveList:
-            pass
+            preset = self.get(preset1)
+            if preset[1] is None:
+                continue
+            self.delete(preset2)
+            self.presets = list(map(lambda preset: (preset2, preset[1]) if preset[0] == preset1 else preset, self.presets))
 
     def get(self, presetNos):
         "Return the patchlist for the requested preset. If multiple presetNos, return a list of (patchNo, patchList) tuples."
