@@ -42,7 +42,7 @@ class VirtualPresetController(PresetController):
             return response # [(presetNo, patchList)]
 
     def getAll(self):
-        pass
+        return self.presets
 
     def delete(self, presetNos):
         "Delete the requested preset(s)."
