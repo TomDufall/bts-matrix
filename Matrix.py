@@ -36,7 +36,7 @@ class Matrix(ABC):
         "An ordered list of inputs, to be applied to outputs in order. I.e. 1, 1, 2, 3 implies 1->1, 1->2, 2->2, 3->3"
         output = 1
         for input in patch:
-            self.patch(output, input)
+            self.patch((output, input))
             output += 1
 
     def patchAll(self, input):
