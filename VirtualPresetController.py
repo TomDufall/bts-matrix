@@ -52,7 +52,7 @@ class VirtualPresetController(PresetController):
             # Convert to a single-element list
             presetNos = [presetNos]
         for presetNo in presetNos:
-            pass
+            self.presets.remove(self.get(presetNo))
 
     def deleteAll(self):
         pass
