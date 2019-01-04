@@ -53,7 +53,7 @@ class VirtualPresetController(PresetController):
             self.presets.remove(self.get(presetNo))
 
     def deleteAll(self):
-        pass
+        self.presets = []
 
     def exists(self, presetNos):
         "If single presetNo, return True/False depending on whether it exists. For a list of presetNos, return a list of tuples(presetNo, True/False)."
