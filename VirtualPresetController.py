@@ -27,9 +27,6 @@ class VirtualPresetController(PresetController):
         for preset1, preset2 in moveList:
             pass
 
-    def apply(self, presetNo):
-        pass
-
     def get(self, presetNos):
         "Return the patchlist for the requested preset. If multiple presetNos, return a list of (patchNo, patchList) tuples."
         if isinstance(presetNos, list) != True:
