@@ -34,13 +34,11 @@ class VirtualPresetController(PresetController):
         "Return the patchlist for the requested preset. If multiple presetNos, return a list of (patchNo, patchList) tuples."
         if isinstance(presetNos, list) != True:
             # Single presetNo
-            pass
-            return # patchList
+            return next((tup for tup in self.presets if tup[0] == presetNos), (presetNos, None))
         else:
             response = []
             for presetNo in presetNos:
-                response.append((presetNo, None))
-                pass
+                response.append(next((tup for tup in self.presets if tup[0] == presetNo), (presetNo, None)))
             return response # [(presetNo, patchList)]
 
     def getAll(self):
