@@ -7,7 +7,7 @@ from abc import ABC, abstractmethod
 class PresetController(ABC):
 
     def __init__(self):
-
+        pass
 
     @abstractmethod
     def save(self, saves):
@@ -29,6 +29,7 @@ class PresetController(ABC):
 
     @abstractmethod
     def apply(self, presetNo):
+        pass
 
 
     @abstractmethod
