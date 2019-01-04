@@ -3,12 +3,17 @@
 
 # enable abstract classes
 from abc import ABC, abstractmethod
+from VirtualPresetController import VirtualPresetController
 
 class Matrix(ABC):
 
-    def __init__(self, input_count, output_count):
+    def __init__(self, input_count, output_count, presetController=None):
         self.INPUT_COUNT = input_count
         self.OUTPUT_COUNT = output_count
+        if presetController is None:
+            self.presetController = VirtualPresetController()
+        else:
+            self.presetController = presetController
 
     def getInputCount(self):
         "Return the number of inputs on the matrix."
@@ -75,3 +80,6 @@ class Matrix(ABC):
         "Restore every output from blackout."
         for output in range(1, self.OUTPUT_COUNT + 1):
             self.unblackout(output)
+
+    def applyPreset(self, presetNo):
+        self.patchList(self.presetController.get(presetNo)[1])
