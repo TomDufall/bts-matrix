@@ -1,1 +1,7 @@
-*.pyc
+__pycache__/
+Include/
+Lib/
+Scripts/
+tcl/
+.pytest_cache/
+pip-selfcheck.json
