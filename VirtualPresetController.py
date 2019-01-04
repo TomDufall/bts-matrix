@@ -13,7 +13,11 @@ class VirtualPresetController(PresetController):
             # Convert to a single-element list
             saves = [saves]
         for presetNo, patchlist in saves:
-            pass
+            if isinstance(presetNo, int) and (patchlist is not None):
+                if self.exists(presetNo):
+                    self.presets = list(map(lambda preset: (preset[0], patchlist) if preset[0] == presetNo else preset, self.presets))
+                else:
+                    self.presets.append((presetNo, patchlist))
 
     def move(self, moveList):
         "A tuple or list of tuples (preset1, preset2). Renumber preset1 as preset2, overwriting preset2 if present."
