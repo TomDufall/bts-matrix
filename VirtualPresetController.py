@@ -25,9 +25,6 @@ class VirtualPresetController(PresetController):
             # Convert to a single-element list
             moveList = [moveList]
         for preset1, preset2 in moveList:
-            preset = self.get(preset1)
-            if preset[1] is None:
-                continue
             self.delete(preset2)
             self.presets = list(map(lambda preset: (preset2, preset[1]) if preset[0] == preset1 else preset, self.presets))
 

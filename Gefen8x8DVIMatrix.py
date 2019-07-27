@@ -34,12 +34,12 @@ class Gefen8x8DVIMatrix(Matrix):
         self.send(msg + '\r')
 
     def patch(self, patchPair):
-        "A list of patch instructions, each given as a tuple {output, input}. Patch the input to the output."
+        "A list of patch instructions, each given as a tuple {input, output}. Patch the input to the output."
         if isinstance(patchPair, list) != True:
             # Convert to a single-element list
             patchPair = [patchPair]
         try:
-            for output, input in patchPair:
+            for input, output in patchPair:
                 self.send('{}'.format(self.toLetter(output) + str(input)))
         except TypeError:
             raise TypeError('Inappropriate argument type. Argument patchPair should be a tuple or list of tuples')
