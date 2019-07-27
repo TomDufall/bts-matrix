@@ -17,11 +17,11 @@ class Matrix(ABC):
 
     def getInputCount(self):
         "Return the number of inputs on the matrix."
-        return self.IN_COUNT
+        return self.INPUT_COUNT
 
     def getOutputCount(self):
         "Return the number of inputs on the matrix."
-        return self.OUT_COUNT
+        return self.OUTPUT_COUNT
 
     @abstractmethod
     def patch(self, input, output):
@@ -34,13 +34,13 @@ class Matrix(ABC):
             # Convert to a single-element list
             patchPair = [patchPair]
         for input, output in patchPair:
-            patch(input, output)
+            self.patch(input, output)
 
     def patchList(self, patch):
         "An ordered list of inputs, to be applied to outputs in order. I.e. 1, 1, 2, 3 implies 1->1, 1->2, 2->2, 3->3"
         output = 1
         for input in patch:
-            self.patch((input, output))
+            self.patch(input, output)
             output += 1
 
     def patchAll(self, input):
