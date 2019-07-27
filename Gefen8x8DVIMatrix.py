@@ -33,16 +33,9 @@ class Gefen8x8DVIMatrix(Matrix):
         "Send a string over serial with a carriage return"
         self.send(msg + '\r')
 
-    def patch(self, patchPair):
-        "A list of patch instructions, each given as a tuple {output, input}. Patch the input to the output."
-        if isinstance(patchPair, list) != True:
-            # Convert to a single-element list
-            patchPair = [patchPair]
-        try:
-            for output, input in patchPair:
-                self.send('{}'.format(self.toLetter(output) + str(input)))
-        except TypeError:
-            raise TypeError('Inappropriate argument type. Argument patchPair should be a tuple or list of tuples')
+    def patch(self, input, output):
+        "A list of patch instructions, each given as a tuple {input, output}. Patch the input to the output."
+        self.send('{}'.format(self.toLetter(output) + str(input)))
 
     def getPatch(self):
         "Return the current routing table as a list of {output, input} tuples."
