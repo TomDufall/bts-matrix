@@ -24,17 +24,25 @@ class Matrix(ABC):
         return self.OUT_COUNT
 
     @abstractmethod
+<<<<<<< HEAD
     def patch(self, input, output):
         "Patch input to output."
         pass
 
     def patchPairs(self, patchPair):
+=======
+    def patch(self, patchPair):
+>>>>>>> 6045fe9f4643f562a26099e66dde17bdb5166e98
         "A list of patch instructions, each given as a tuple {input, output}. Patch the input to the output."
         if isinstance(patchPair, list) != True:
             # Convert to a single-element list
             patchPair = [patchPair]
         for input, output in patchPair:
+<<<<<<< HEAD
             patch(input, output)
+=======
+            pass
+>>>>>>> 6045fe9f4643f562a26099e66dde17bdb5166e98
 
     def patchList(self, patch):
         "An ordered list of inputs, to be applied to outputs in order. I.e. 1, 1, 2, 3 implies 1->1, 1->2, 2->2, 3->3"
