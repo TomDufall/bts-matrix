@@ -1,89 +1,110 @@
-# This is an abstract Matrix. An implementation should use this class to communicate with the matrix, for example, over serial protocol
-# Some functions are included to reduce more complex instructions to common simple ones - if the more complex instructions are supported, use them!
+"""
+Generic video matrix interface.
 
-# enable abstract classes
+Some functions are included to reduce complex instructions to common simple
+ones - if the complex instructions are supported in hardware, implement them!
+"""
+
 from abc import ABC, abstractmethod
 from VirtualPresetController import VirtualPresetController
 
 class Matrix(ABC):
+    """
+    Generic video matrix interface.
 
-    def __init__(self, input_count, output_count, presetController=None):
+    Some functions are included to reduce complex instructions to common simple
+    ones - if the complex instructions are supported in hardware, implement them!
+    """
+    def __init__(self, input_count, output_count, preset_controller=None):
         self.INPUT_COUNT = input_count
         self.OUTPUT_COUNT = output_count
-        if presetController is None:
-            self.presetController = VirtualPresetController()
+        if preset_controller is None:
+            self.PRESET_CONTROLLER = VirtualPresetController()
         else:
-            self.presetController = presetController
+            self.PRESET_CONTROLLER = preset_controller
 
-    def getInputCount(self):
-        "Return the number of inputs on the matrix."
+    def get_input_count(self):
+        """Return the number of inputs on the matrix."""
         return self.INPUT_COUNT
 
-    def getOutputCount(self):
-        "Return the number of inputs on the matrix."
+    def get_output_count(self):
+        """Return the number of inputs on the matrix."""
         return self.OUTPUT_COUNT
 
     @abstractmethod
-    def patch(self, input, output):
-        "Patch input to output."
-        pass
+    def patch(self, input_, output):
+        """Patch the given input to the given output"""
+        raise NotImplementedError
 
-    def patchPairs(self, patchPair):
-        "A list of patch instructions, each given as a tuple {input, output}. Patch the input to the output."
-        if isinstance(patchPair, list) != True:
+    def patch_pairs(self, patch_pairs):
+        """
+        A list of patch instructions, each given as a tuple {input, output}.
+        """
+        if not isinstance(patch_pairs, list):
             # Convert to a single-element list
-            patchPair = [patchPair]
-        for input, output in patchPair:
-            self.patch(input, output)
+            patch_pairs = [patch_pairs]
+        for input_, output in patch_pairs:
+            self.patch(input_, output)
 
-    def patchList(self, patch):
-        "An ordered list of inputs, to be applied to outputs in order. I.e. 1, 1, 2, 3 implies 1->1, 1->2, 2->2, 3->3"
+    def patch_list(self, patch):
+        """
+        An ordered list of inputs, to be applied to outputs in order.
+        I.e. [1, 1, 2, 3] implies in 1 -> out 1, in 1 -> out 2, etc
+        """
         output = 1
-        for input in patch:
-            self.patch(input, output)
+        for input_ in patch:
+            self.patch(input_, output)
             output += 1
 
-    def patchAll(self, input):
-        "Patch the given input to every output"
+    def patch_one_to_all(self, input_):
+        """Patch the given input to every output"""
         for output in range(1, self.OUTPUT_COUNT + 1):
-            self.patch(input, output)
+            self.patch(input_, output)
 
-    def patchOneToOne(self):
-        "Patch 1->1, 2->2, etc. If more outputs than inputs, wrap and start counting from 1 again."
+    def patch_one_to_one(self):
+        """
+        Patch in 1 -> out 1, in 2 -> out 2, etc.
+        If more outputs than inputs, wrap and start counting from 1 again.
+        """
         for i in range(0, self.OUTPUT_COUNT):
             self.patch((i % self.INPUT_COUNT) + 1, i + 1)
 
     @abstractmethod
-    def getPatch(self):
-        "Return the current routing table as a list of {output, input} tuples."
+    def get_patch(self):
+        """
+        Return the current routing table as an ordered list of inputs
+        I.e. [1, 4, 7] implies [(in 1 -> out 1), (in 4 -> out 2), etc]
+        """
+        raise NotImplementedError
 
     @abstractmethod
     def blackout(self, outputs):
-        "Blackout the given outputs."
-        if isinstance(outputs, list) != True:
+        """Black out the given outputs."""
+        if not isinstance(outputs, list):
             # Convert to a single-element list
             outputs = [outputs]
         for output in outputs:
-            pass
+            raise NotImplementedError
 
     @abstractmethod
     def unblackout(self, outputs):
-        "Restore the given outputs from blackout."
-        if isinstance(outputs, list) != True:
+        """Restore the given outputs from blackout."""
+        if not isinstance(outputs, list):
             # Convert to a single-element list
             outputs = [outputs]
         for output in outputs:
-            pass
+            raise NotImplementedError
 
-    def blackoutAll(self):
-        "Black out every output."
+    def blackout_all(self):
+        """Black out every output."""
         for output in range(1, self.OUTPUT_COUNT + 1):
             self.blackout(output)
 
-    def unblackoutAll(self):
-        "Restore every output from blackout."
+    def unblackout_all(self):
+        """Restore every output from blackout."""
         for output in range(1, self.OUTPUT_COUNT + 1):
             self.unblackout(output)
 
-    def applyPreset(self, presetNo):
-        self.patchList(self.presetController.get(presetNo)[1])
+    def apply_preset(self, preset_no):
+        """Apply a numbered preset patch from the preset controller"""
+        self.patch_list(self.PRESET_CONTROLLER.get(preset_no)[1])
