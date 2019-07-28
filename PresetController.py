@@ -1,74 +1,95 @@
-# This is an abstract preset controller
-# A preset controller should store IO patch presets and recall them as required
-# It may be hardware-based, software-based, or hybrid. It should support unlimited presets.
+"""
+Manages matrix presets - saved input-output mapping configurations.
+"""
 
 from abc import ABC, abstractmethod
 
 class PresetController(ABC):
-
+    """
+    Manages matrix presets - saved input-output mapping configurations.
+    """
     def __init__(self):
         pass
 
     @abstractmethod
-    def save(self, saves):
-        "A tuple or list of tuples (presetNo, [patchlist]). Save each preset."
-        if isinstance(saves, list) != True:
-            # Convert to a single-element list
-            saves = [saves]
-        for presetNo, patchlist in saves:
-            pass
+    def delete_all_presets(self):
+        """
+        Delete all preset in the preset controller.
+        """
+        raise NotImplementedError
 
     @abstractmethod
-    def move(self, moveList):
-        "A tuple or list of tuples (preset1, preset2). Renumber preset1 as preset2, overwriting preset2 if present."
-        if isinstance(moveList, list) != True:
-            # Convert to a single-element list
-            moveList = [moveList]
-        for preset1, preset2 in moveList:
-            pass
+    def delete_preset(self, preset_id):
+        """
+        Delete the given preset id.
+        """
+        raise NotImplementedError
 
     @abstractmethod
-    def get(self, presetNos):
-        "Return the patchlist for the requested preset. If multiple presetNos, return a list of (patchNo, patchList) tuples."
-        if isinstance(presetNos, list) != True:
-            # Single presetNo
-            pass
-            return # patchList
-        else:
-            response = []
-            for presetNo in presetNos:
-                response.append((presetNo, None))
-                pass
-            return response # [(presetNo, patchList)]
+    def get_preset(self, preset_id):
+        """
+        Return the patchlist for the given preset id.
+        If the preset doesn't exist, return None.
+        [patchlist] is a list of inputs to be assigned to outputs in order.
+        e.g. [1, 3, 4] implies in 1 -> out 1, in 3 -> out 2, in 4 -> out 3.
+        """
+        raise NotImplementedError
 
     @abstractmethod
-    def getAll(self):
-        pass
+    def get_all_presets(self):
+        """
+        For each stored preset, return (preset_id, patchlist).
+        [patchlist] is a list of inputs to be assigned to outputs in order.
+        e.g. [1, 3, 4] implies in 1 -> out 1, in 3 -> out 2, in 4 -> out 3.
+        """
+        raise NotImplementedError
 
     @abstractmethod
-    def delete(self, presetNos):
-        "Delete the requested preset(s)."
-        if isinstance(presetNos, list) != True:
-            # Convert to a single-element list
-            presetNos = [presetNos]
-        for presetNo in presetNos:
-            pass
+    def list_presets(self):
+        """
+        List all preset ids currently in use.
+        """
+        raise NotImplementedError
 
     @abstractmethod
-    def deleteAll(self):
-        pass
+    def move_preset(self, preset1, preset2):
+        """
+        Rename preset 1 as preset 2, overwriting preset 2, if present.
+        """
+        raise NotImplementedError
 
     @abstractmethod
-    def exists(self, presetNos):
-        "If single presetNo, return True/False depending on whether it exists. For a list of presetNos, return a list of tuples(presetNo, True/False)."
-        if isinstance(presetNos, list) != True:
-            # Single presetNo
-            pass
-            return # True/False
-        else:
-            response = []
-            for presetNo in presetNos:
-                response.append((presetNo, None))
-                pass
-            return response # [(presetNo, patchList)]
-        
+    def preset_id_in_use(self, preset_id):
+        """
+        Return True if preset exists, else False.
+        """
+        raise NotImplementedError
+
+    @abstractmethod
+    def save_preset(self, patchlist):
+        """
+        Save the given patchlist in any free preset id.
+        Return the id chosen, or None if failed (e.g. run out of ids).
+        [patchlist] is a list of inputs to be assigned to outputs in order.
+        e.g. [1, 3, 4] implies in 1 -> out 1, in 3 -> out 2, in 4 -> out 3.
+        """
+        raise NotImplementedError
+
+    @abstractmethod
+    def set_preset(self, preset_id, patchlist):
+        """
+        Save the given patchlist as the given preset id.
+        [patchlist] is a list of inputs to be assigned to outputs in order.
+        e.g. [1, 3, 4] implies in 1 -> out 1, in 3 -> out 2, in 4 -> out 3.
+        """
+        raise NotImplementedError
+
+    def set_presets(self, saves):
+        """
+        Save the given list of preset ids and patchlists.
+        saves is a list of (preset_id, patchlist) tuples.
+        [patchlist] is a list of inputs to be assigned to outputs in order.
+        e.g. [1, 3, 4] implies in 1 -> out 1, in 3 -> out 2, in 4 -> out 3.
+        """
+        for (preset_id, patchlist) in saves:
+            self.set_preset(preset_id, patchlist)

@@ -1,71 +1,107 @@
-# Virtual preset controller - does not require Matrix hardware
+"""
+VirtualPresetController acts as a preset controller for matrixes without
+hardware support for presets.
+"""
 
+import random
 from PresetController import PresetController
 
 class VirtualPresetController(PresetController):
-
+    """
+    VirtualPresetController acts as a preset controller for matrixes without
+    hardware support for presets.
+    """
     def __init__(self):
-        self.presets = []
+        super().__init__()
+        self._presets = {}
 
-    def save(self, saves):
-        "A tuple or list of tuples (presetNo, [patchlist]). Save each preset."
-        if isinstance(saves, list) != True:
-            # Convert to a single-element list
-            saves = [saves]
-        for presetNo, patchlist in saves:
-            if isinstance(presetNo, int) and (patchlist is not None):
-                if self.exists(presetNo):
-                    self.presets = list(map(lambda preset: (preset[0], patchlist) if preset[0] == presetNo else preset, self.presets))
-                else:
-                    self.presets.append((presetNo, patchlist))
+    def delete_all_presets(self):
+        """
+        Delete all preset in the preset controller.
+        """
+        # Clear the presets dict
+        self._presets = {}
 
-    def move(self, moveList):
-        "A tuple or list of tuples (preset1, preset2). Renumber preset1 as preset2, overwriting preset2 if present. Identified by number."
-        if isinstance(moveList, list) != True:
-            # Convert to a single-element list
-            moveList = [moveList]
-        for preset1, preset2 in moveList:
-            self.delete(preset2)
-            self.presets = list(map(lambda preset: (preset2, preset[1]) if preset[0] == preset1 else preset, self.presets))
+    def delete_preset(self, preset_id):
+        """
+        Delete the given preset id.
+        """
+        try:
+            del self._presets[preset_id]
+        except KeyError:
+            # Preset doesn't exist to be deleted
+            pass
 
-    def get(self, presetNos):
-        "Return the patchlist for the requested preset. If multiple presetNos, return a list of (patchNo, patchList) tuples."
-        if isinstance(presetNos, list) != True:
-            # Single presetNo
-            return next((tup for tup in self.presets if tup[0] == presetNos), (presetNos, None))
-        else:
-            response = []
-            for presetNo in presetNos:
-                response.append(next((tup for tup in self.presets if tup[0] == presetNo), (presetNo, None)))
-            return response # [(presetNo, patchList)]
+    def get_preset(self, preset_id):
+        """
+        Return the patchlist for the given preset id.
+        If the preset doesn't exist, return None.
+        [patchlist] is a list of inputs to be assigned to outputs in order.
+        e.g. [1, 3, 4] implies in 1 -> out 1, in 3 -> out 2, in 4 -> out 3.
+        """
+        return self._presets.pop(preset_id, None)
 
-    def getAll(self):
-        return self.presets
+    def get_all_presets(self):
+        """
+        For each stored preset, return (preset_id, patchlist).
+        [patchlist] is a list of inputs to be assigned to outputs in order.
+        e.g. [1, 3, 4] implies in 1 -> out 1, in 3 -> out 2, in 4 -> out 3.
+        """
+        return [(preset_id, self._presets[preset_id])
+                for preset_id in self._presets]
 
-    def delete(self, presetNos):
-        "Delete the requested preset(s)."
-        if isinstance(presetNos, list) != True:
-            # Convert to a single-element list
-            presetNos = [presetNos]
-        for presetNo in presetNos:
-            try:
-                self.presets.remove(self.get(presetNo))
-            except ValueError:
-                # If not in list, ignore
-                pass
+    def list_presets(self):
+        """
+        List all preset ids currently in use.
+        """
+        return [preset_id for preset_id in self._presets]
 
-    def deleteAll(self):
-        self.presets = []
+    def move_preset(self, preset1, preset2):
+        """
+        Rename preset 1 as preset 2, overwriting preset 2, if present.
+        """
+        patchlist = self._presets.pop(preset1, None)
+        if patchlist is not None:
+            self._presets[preset2] = patchlist
+            self.delete_preset(preset1)
 
-    def exists(self, presetNos):
-        "If single presetNo, return True/False depending on whether it exists. For a list of presetNos, return a list of tuples(presetNo, True/False)."
-        if isinstance(presetNos, list) != True:
-            # Single presetNo
-            # True if found, False if terminates without finding
-            return next((True for tup in self.presets if tup[0] == presetNos), False)
-        else:
-            response = []
-            for presetNo in presetNos:
-                response.append((presetNo, self.exists(presetNo)))
-            return response # [(presetNo, patchList)]
-        
+    def preset_id_in_use(self, preset_id):
+        """
+        Return True if preset exists, else False.
+        """
+        return preset_id in self._presets
+
+    @staticmethod
+    def random_string(length=6):
+        """
+        Generate a random string of a given length.
+        Length defaults to 6.
+        """
+        str_ = ''
+        for _ in range(length):
+            str_ += random.choice('ABCDEFGHIJKLMNOPQRSTUVWXYZ')
+        return str_
+
+    def save_preset(self, patchlist):
+        """
+        Save the given patchlist in any free preset id.
+        Return the id chosen, or None if failed (e.g. run out of ids).
+        [patchlist] is a list of inputs to be assigned to outputs in order.
+        e.g. [1, 3, 4] implies in 1 -> out 1, in 3 -> out 2, in 4 -> out 3.
+        """
+        # Use random string as id, making name collision unlikely
+        for _ in range(3):
+            preset_id = self.random_string()
+            if not self.preset_id_in_use(preset_id):
+                self.set_preset(preset_id, patchlist)
+                return preset_id
+        # 3 attempts failed - return None for failure
+        return None
+
+    def set_preset(self, preset_id, patchlist):
+        """
+        Save the given patchlist as the given preset id.
+        [patchlist] is a list of inputs to be assigned to outputs in order.
+        e.g. [1, 3, 4] implies in 1 -> out 1, in 3 -> out 2, in 4 -> out 3.
+        """
+        self._presets[preset_id] = patchlist
